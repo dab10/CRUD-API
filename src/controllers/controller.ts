@@ -1,4 +1,4 @@
-import http from "http";
+import * as http from "http";
 import * as database from "../models/model";
 import { User } from "../userDB/userDB";
 

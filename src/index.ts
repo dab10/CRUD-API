@@ -1,4 +1,5 @@
-import http from "http";
+import * as http from "http";
+import 'dotenv/config';
 import { getUsers, getUser, createUser, updateUser, deleteUser } from "./controllers/controller";
 
 const server = http.createServer((req, res) => {
