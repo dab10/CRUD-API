@@ -6,8 +6,8 @@
   "scripts": {
     "start:dev": "nodemon",
     "start:prod": "webpack --mode=production && node ./dist/index.js",
-    "start:multi": "tsc && node ./dist/index.js --balancer",
-    "dev:multi": "nodemon --exec npx ts-node-esm src/index.ts --balancer",
+    "start:multi": "webpack --mode=production && node ./dist/index.js --balancer",
+    "dev:multi": "nodemon --balancer",
     "lint": "eslint src//*.ts",
     "lint:fix": "eslint --fix src//*.ts",
     "test": "jest"
