@@ -10,8 +10,5 @@ export type UserDB = {
 }
 
 export const database: UserDB = {
-  users: [ {id: 'ab2536c9-18bb-43e9-9f99-bc35116418fc',
-    username: 'string',
-    age: 20,
-    hobbies: []}]
+  users: []
 };
