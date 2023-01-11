@@ -1,6 +1,8 @@
 import * as http from "http";
 import * as database from "../models/model";
 import { User } from "../userDB/userDB";
+import { validateBodyRequest } from "../utils/validateBodyRequest";
+import { validateId } from "../utils/validateId";
 
 export const getUsers = async (req: http.IncomingMessage, res: http.ServerResponse) => {
   try {
@@ -15,15 +17,19 @@ export const getUsers = async (req: http.IncomingMessage, res: http.ServerRespon
 
 export const getUser = async (req: http.IncomingMessage, res: http.ServerResponse, id: string) => {
   try {
-    const user = await database.findById(id);
-    if (!user) {
-      res.writeHead(404, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ message: 'User Not Found' }));
+    if (validateId(req.url)) {
+      const user = await database.findById(id);
+      if (!user) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ code: 404, message: 'User Not Found' }));
+      } else {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(user));
+      }
     } else {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(user));
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ code: 400, message: 'user id is invalid'}));
     }
-
   } catch (error) {
     console.log(error);
   }
@@ -37,19 +43,27 @@ export const createUser = async (req: http.IncomingMessage, res: http.ServerResp
     })
 
     req.on('end', async () => {
-      const { username, age, hobbies} = JSON.parse(body);
+      if (validateBodyRequest(body) === 'validate OK') {
+        const { username, age, hobbies} = JSON.parse(body);
 
-      const user  = { 
-        username,
-        age,
-        hobbies 
+        const user  = { 
+          username,
+          age,
+          hobbies 
+        }
+  
+        const newUser = await database.create(user);
+  
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify(newUser));
+      } else if (validateBodyRequest(body) === 'error JSON parse') {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ code: 400, message: 'unexpected character of the JSON data'}));
+      } else {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ code: 400, message: 'request body does not contain required fields (username, age, hobbies) or properties do not match data types'}));
       }
-
-      const newUser = await database.create(user);
-
-      res.writeHead(201, { 'Content-Type': 'application/json' });
-      return res.end(JSON.stringify(newUser));
-    })
+    }) 
 
   } catch (error) {
     console.log(error);
@@ -80,7 +94,7 @@ export const updateUser = async (req: http.IncomingMessage, res: http.ServerResp
   
         const updateUser = await database.update(id, userFromDB);
   
-        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.writeHead(200, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify(updateUser));
       })
     }
