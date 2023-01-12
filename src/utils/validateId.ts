@@ -1,3 +1,4 @@
+import { version as uuidVersion } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
 
 export const validateId = (url: string | undefined) => {
@@ -6,7 +7,7 @@ export const validateId = (url: string | undefined) => {
     const baseUrl = `/${urlArr[1]}/${urlArr[2]}`;
     const id = urlArr[3];
 
-    if (baseUrl === '/api/users' && uuidValidate(id)) {
+    if (baseUrl === '/api/users' && uuidValidate(id) && uuidVersion(id) === 4) {
       return true;
     } else {
       return false;

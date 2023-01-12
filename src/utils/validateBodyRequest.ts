@@ -1,11 +1,16 @@
 import { User } from "../userDB/userDB";
 
 export const validateBodyRequest = (body: string) => {
+
   if (body) {
     try {
       JSON.parse(body);
-    } catch {
-      return 'error JSON parse';
+    } catch (error) {
+      if ((error as Error).name === 'SyntaxError') { 
+        return 'error JSON parse';
+      } else {
+        throw error;
+      }
     }
     const bodyParsed: User = JSON.parse(body);
     const size = Object.keys(bodyParsed).length;
