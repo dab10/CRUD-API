@@ -1,4 +1,5 @@
 import { User } from "../userDB/userDB";
+import { ValidateBodyRequestStatus } from "./const";
 
 export const validateBodyRequest = (body: string) => {
 
@@ -7,7 +8,7 @@ export const validateBodyRequest = (body: string) => {
       JSON.parse(body);
     } catch (error) {
       if ((error as Error).name === 'SyntaxError') { 
-        return 'error JSON parse';
+        return ValidateBodyRequestStatus.ErrorJsonParse;
       } else {
         throw error;
       }
@@ -30,11 +31,11 @@ export const validateBodyRequest = (body: string) => {
       Array.isArray(bodyParsed.hobbies) &&
       (bodyParsed.hobbies.length === 0 || hobbiesValue.every((item) => typeof item === 'string'))
     ) {
-      return 'validate OK';
+      return  ValidateBodyRequestStatus.Ok;
     } else {
-      return 'validate error';
+      return ValidateBodyRequestStatus.ValidateError;
     }
   } else {
-    return 'validate error';
+    return ValidateBodyRequestStatus.ValidateError;
   }
 }

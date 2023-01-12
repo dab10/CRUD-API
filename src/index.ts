@@ -1,36 +1,37 @@
 import * as http from "http";
 import 'dotenv/config';
 import { getUsers, getUser, createUser, updateUser, deleteUser } from "./controllers/controller";
+import { apiUrl, baseUrl, Errors, HttpStatusCode, usersUrl } from "./utils/const";
 
 const server = http.createServer(async (req, res) => {
   try {
-    if (req.url === '/api/users' && req.method === 'GET') {
+    if (req.url === baseUrl && req.method === 'GET') {
       await getUsers(req, res);
-    } else if (req.url === '/api/users' && req.method === 'POST') {
+    } else if (req.url === baseUrl && req.method === 'POST') {
       await createUser(req, res); 
-    } else if (req.url && req.url.split('/').length === 4 && req.url.split('/')[1] === 'api' && req.url.split('/')[2] === 'users' && req.method === 'GET') {
+    } else if (req.url && req.url.split('/').length === 4 && req.url.split('/')[1] === apiUrl && req.url.split('/')[2] === usersUrl && req.method === 'GET') {
       const id = req.url.split('/')[3];
       await getUser(req, res, id);
-    } else if (req.url && req.url.split('/').length === 4 && req.url.split('/')[1] === 'api' && req.url.split('/')[2] === 'users' && req.method === 'PUT') {
+    } else if (req.url && req.url.split('/').length === 4 && req.url.split('/')[1] === apiUrl && req.url.split('/')[2] === usersUrl && req.method === 'PUT') {
       const id = req.url.split('/')[3];
       await updateUser(req, res, id);
-    } else if (req.url && req.url.split('/').length === 4 && req.url.split('/')[1] === 'api' && req.url.split('/')[2] === 'users' && req.method === 'DELETE') {
+    } else if (req.url && req.url.split('/').length === 4 && req.url.split('/')[1] === apiUrl && req.url.split('/')[2] === usersUrl && req.method === 'DELETE') {
       const id = req.url.split('/')[3];
       await deleteUser(req, res, id);
     } else if (
-        (req.url === '/api/users' && req.method !== 'GET') || 
-        (req.url === '/api/users' && req.method !== 'POST') ||
-        (req.url && req.url.split('/').length === 4 && req.url.split('/')[1] === 'api' && req.url.split('/')[2] === 'users' && !['GET', 'PUT', 'DELETE'].some((item) => item === req.method))
+        (req.url === baseUrl && req.method !== 'GET') || 
+        (req.url === baseUrl && req.method !== 'POST') ||
+        (req.url && req.url.split('/').length === 4 && req.url.split('/')[1] === apiUrl && req.url.split('/')[2] === usersUrl && !['GET', 'PUT', 'DELETE'].some((item) => item === req.method))
       ) {
-      res.writeHead(501, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ code: 501, message: `server does not support entered request with type of method ${req.method}`}));
+      res.writeHead(HttpStatusCode.NotImplemented, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ code: HttpStatusCode.NotImplemented, message: Errors.MethodNotSupport}));
     } else {
-      res.writeHead(404, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ code: 404, message: 'Route Not Found'}));
+      res.writeHead(HttpStatusCode.NotFound, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ code: HttpStatusCode.NotFound, message: Errors.RouteNotFound}));
     }
   } catch {
-    res.writeHead(500, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ code: 500, message: 'internal server error'}));
+    res.writeHead(HttpStatusCode.InternalServerError, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ code: HttpStatusCode.InternalServerError, message: Errors.ServerError}));
   }
 });
 

@@ -1,13 +1,14 @@
 import * as http from "http";
 import * as database from "../models/model";
 import { User } from "../userDB/userDB";
+import { Errors, HttpStatusCode, ValidateBodyRequestStatus } from "../utils/const";
 import { getUserData } from "../utils/getUserData";
 import { validateBodyRequest } from "../utils/validateBodyRequest";
 import { validateId } from "../utils/validateId";
 
-export const getUsers = async (req: http.IncomingMessage, res: http.ServerResponse) => {
+export const getUsers = async (_: http.IncomingMessage, res: http.ServerResponse) => {
     const users = await database.findAll();
-    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.writeHead(HttpStatusCode.Ok, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(users));
 }
 
@@ -16,22 +17,22 @@ export const getUser = async (req: http.IncomingMessage, res: http.ServerRespons
     if (validateId(req.url)) {
       const user = await database.findById(id);
       if (!user) {
-        res.writeHead(404, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ code: 404, message: 'User Not Found' }));
+        res.writeHead(HttpStatusCode.NotFound, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ code: HttpStatusCode.NotFound, message: Errors.UserNotFound }));
       } else {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.writeHead(HttpStatusCode.Ok, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(user));
       }
     } else {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ code: 400, message: 'user id is invalid'}));
+      res.writeHead(HttpStatusCode.BadRequest, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ code: HttpStatusCode.BadRequest, message: Errors.InvalidUserId}));
     }
 }
 
 export const createUser = async (req: http.IncomingMessage, res: http.ServerResponse) => {
     const body = await getUserData(req);
 
-    if (validateBodyRequest(body) === 'validate OK') {
+    if (validateBodyRequest(body) === ValidateBodyRequestStatus.Ok) {
       const { username, age, hobbies} = JSON.parse(body);
 
       const user = { 
@@ -42,14 +43,14 @@ export const createUser = async (req: http.IncomingMessage, res: http.ServerResp
 
       const newUser = await database.create(user);
 
-      res.writeHead(201, { 'Content-Type': 'application/json' });
+      res.writeHead(HttpStatusCode.Created, { 'Content-Type': 'application/json' });
       return res.end(JSON.stringify(newUser));
-  } else if (validateBodyRequest(body) === 'error JSON parse') {
-    res.writeHead(400, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ code: 400, message: 'unexpected character of the JSON data'}));
+  } else if (validateBodyRequest(body) === ValidateBodyRequestStatus.ErrorJsonParse) {
+    res.writeHead(HttpStatusCode.BadRequest, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ code: HttpStatusCode.BadRequest, message: Errors.ErrorJsonParse}));
   } else {
-    res.writeHead(400, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ code: 400, message: 'request body does not contain required fields (username, age, hobbies) or properties do not match data types'}));
+    res.writeHead(HttpStatusCode.BadRequest, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ code: HttpStatusCode.BadRequest, message: Errors.NotValidateFields}));
   }
     
 }
@@ -58,11 +59,11 @@ export const updateUser = async (req: http.IncomingMessage, res: http.ServerResp
     if (validateId(req.url)) {
       const user = await database.findById(id);
       if (!user) {
-        res.writeHead(404, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ code: 404, message: 'User Not Found' }));
+        res.writeHead(HttpStatusCode.NotFound, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ code: HttpStatusCode.NotFound, message: Errors.UserNotFound }));
       } else {
         const body = await getUserData(req);
-        if (validateBodyRequest(body) === 'validate OK') {
+        if (validateBodyRequest(body) === ValidateBodyRequestStatus.Ok) {
           const { username, age, hobbies} = JSON.parse(body);
 
           const userFromDB: User  = { 
@@ -73,19 +74,19 @@ export const updateUser = async (req: http.IncomingMessage, res: http.ServerResp
 
           const updateUser = await database.update(id, userFromDB);
 
-          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.writeHead(HttpStatusCode.Ok, { 'Content-Type': 'application/json' });
           return res.end(JSON.stringify(updateUser));
-        } else if (validateBodyRequest(body) === 'error JSON parse') {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ code: 400, message: 'unexpected character of the JSON data'}));
+        } else if (validateBodyRequest(body) === ValidateBodyRequestStatus.ErrorJsonParse) {
+          res.writeHead(HttpStatusCode.BadRequest, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ code: HttpStatusCode.BadRequest, message: Errors.ErrorJsonParse}));
         } else {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ code: 400, message: 'request body does not contain required fields (username, age, hobbies) or properties do not match data types'}));
+          res.writeHead(HttpStatusCode.BadRequest, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ code: HttpStatusCode.BadRequest, message: Errors.NotValidateFields}));
         }
       }
     } else {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ code: 400, message: 'user id is invalid'}));
+      res.writeHead(HttpStatusCode.BadRequest, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ code: HttpStatusCode.BadRequest, message: Errors.InvalidUserId}));
     }
 }
 
@@ -94,15 +95,15 @@ export const deleteUser = async (req: http.IncomingMessage, res: http.ServerResp
       const user = await database.findById(id);
 
       if (!user) {
-        res.writeHead(404, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ code: 404, message: 'User Not Found' }));
+        res.writeHead(HttpStatusCode.NotFound, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ code: HttpStatusCode.NotFound, message: Errors.UserNotFound }));
       } else {
         await database.remove(id);
-        res.writeHead(204, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ code: 204, message: `User ${id} removed` }));
+        res.writeHead(HttpStatusCode.NoContent, { 'Content-Type': 'application/json' });
+        res.end();
       }
     } else {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ code: 400, message: 'user id is invalid'}));
+      res.writeHead(HttpStatusCode.BadRequest, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ code: HttpStatusCode.BadRequest, message: Errors.InvalidUserId}));
     }
 }
