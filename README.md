@@ -76,6 +76,8 @@ Body of POST and PUT object must have JSON body with:
   * `age` — user's age (`number`, **required**)
   * `hobbies` — user's hobbies (`array` of `strings` or empty `array`, **required**)
 
+The order of the fields (username, age, hobbies) is mandatory.
+
 ---
 
 ## Testing
