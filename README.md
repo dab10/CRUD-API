@@ -72,7 +72,7 @@ npm run test
 ---
 
 ## Application features
-Database server is located on http:\\localhost:(PORT + 'number cpu your PC'). 
+Database server is located on http:\\\\localhost:(PORT + 'number cpu your PC'). 
 So, if there are errors on server side of this localhost, then you will get an error on any request from another server.
 
 Please, when you make request, make the body size adequate.
