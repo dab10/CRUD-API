@@ -16,7 +16,7 @@ Please, wait for all servers to load before making a request (especially in mult
 Database server is located on http:\\\\localhost:(PORT + 'number cpu your PC'). 
 So, if there are errors on server side of this localhost, then you will get an error on any request from another server.
 
-Please, wait for all servers to load before making a request (especially in multi mode!).
+Please keep in mind that in production mode, changes in the code do not automatically change the bundle. When changing the code, the bundle needs to be reassembled using a special command. In the development mode, tracking of code changes is organized.
 
 Please, when you make request, make the body size adequate.
 
