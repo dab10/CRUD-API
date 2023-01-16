@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon",
+    "start:dev": "nodemon ./src/index.ts",
     "start:prod": "webpack --mode=production && node ./dist/index.js",
     "start:multi": "webpack --mode=production && node ./dist/index.js --balancer",
-    "dev:multi": "nodemon --balancer",
+    "dev:multi": "nodemon ./src/cluster.ts",
     "lint": "eslint src//*.ts",
     "lint:fix": "eslint --fix src//*.ts",
     "test": "jest"
@@ -46,7 +46,6 @@
     "watch": [
       "src"
     ],
-    "ext": ".ts, .js",
-    "exec": "ts-node src/index.ts"
+    "ext": ".ts, .js"
   }
 }

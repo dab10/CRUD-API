@@ -14,9 +14,14 @@ export const findById = (id: string) => {
   });
 };
 
-export const create = (user: User) => {
+export const create = (user: User, multi = false) => {
   return new Promise<User>((resolve, _) => {
-    const newUser = {id: uuidv4(), ...user};
+    let newUser;
+    if (multi) {
+      newUser = {...user};
+    } else {
+      newUser = {id: uuidv4(), ...user};
+    }
     database.users.push(newUser);
     resolve(newUser);
   });

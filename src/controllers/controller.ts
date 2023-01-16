@@ -1,5 +1,5 @@
 import * as http from "http";
-import * as database from "../models/model";
+import * as model from "../models/model";
 import { User } from "../userDB/userDB";
 import { Errors, HttpStatusCode, ValidateBodyRequestStatus } from "../utils/const";
 import { getUserData } from "../utils/getUserData";
@@ -7,7 +7,7 @@ import { validateBodyRequest } from "../utils/validateBodyRequest";
 import { validateId } from "../utils/validateId";
 
 export const getUsers = async (_: http.IncomingMessage, res: http.ServerResponse) => {
-    const users = await database.findAll();
+    const users = await model.findAll();
     res.writeHead(HttpStatusCode.Ok, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(users));
 }
@@ -15,7 +15,7 @@ export const getUsers = async (_: http.IncomingMessage, res: http.ServerResponse
 export const getUser = async (req: http.IncomingMessage, res: http.ServerResponse, id: string) => {
 
     if (validateId(req.url)) {
-      const user = await database.findById(id);
+      const user = await model.findById(id);
       if (!user) {
         res.writeHead(HttpStatusCode.NotFound, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ code: HttpStatusCode.NotFound, message: Errors.UserNotFound }));
@@ -41,7 +41,7 @@ export const createUser = async (req: http.IncomingMessage, res: http.ServerResp
         hobbies 
       };
 
-      const newUser = await database.create(user);
+      const newUser = await model.create(user);
 
       res.writeHead(HttpStatusCode.Created, { 'Content-Type': 'application/json' });
       return res.end(JSON.stringify(newUser));
@@ -57,7 +57,7 @@ export const createUser = async (req: http.IncomingMessage, res: http.ServerResp
 
 export const updateUser = async (req: http.IncomingMessage, res: http.ServerResponse, id: string) => {
     if (validateId(req.url)) {
-      const user = await database.findById(id);
+      const user = await model.findById(id);
       if (!user) {
         res.writeHead(HttpStatusCode.NotFound, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ code: HttpStatusCode.NotFound, message: Errors.UserNotFound }));
@@ -72,7 +72,7 @@ export const updateUser = async (req: http.IncomingMessage, res: http.ServerResp
             hobbies: hobbies || user.hobbies,
           }
 
-          const updateUser = await database.update(id, userFromDB);
+          const updateUser = await model.update(id, userFromDB);
 
           res.writeHead(HttpStatusCode.Ok, { 'Content-Type': 'application/json' });
           return res.end(JSON.stringify(updateUser));
@@ -92,13 +92,13 @@ export const updateUser = async (req: http.IncomingMessage, res: http.ServerResp
 
 export const deleteUser = async (req: http.IncomingMessage, res: http.ServerResponse, id: string) => {
     if (validateId(req.url)) {
-      const user = await database.findById(id);
+      const user = await model.findById(id);
 
       if (!user) {
         res.writeHead(HttpStatusCode.NotFound, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ code: HttpStatusCode.NotFound, message: Errors.UserNotFound }));
       } else {
-        await database.remove(id);
+        await model.remove(id);
         res.writeHead(HttpStatusCode.NoContent, { 'Content-Type': 'application/json' });
         res.end();
       }
