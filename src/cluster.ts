@@ -13,7 +13,7 @@ let isFirstRequest = true;
 let current = 0;
 
 // const cpusCount = os.cpus().length;
-const cpusCount = 1;
+const cpusCount = 4;
 
 if (cluster.isPrimary) {
 

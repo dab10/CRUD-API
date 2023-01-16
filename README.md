@@ -10,6 +10,16 @@ Endpoint is `api/users`:
 
 ---
 
+## Application features
+Database server is located on http:\\\\localhost:(PORT + 'number cpu your PC'). 
+So, if there are errors on server side of this localhost, then you will get an error on any request from another server.
+
+Please, when you make request, make the body size adequate.
+
+Errors on the server side are handled during the processing of a request (as specified in the task). Another do not handle and not required by the assignment.
+
+---
+
 ## How to install
 
 To run this API server, you must do the following steps:
@@ -68,14 +78,6 @@ You don't need to start server in additional terminal window. Just run test by c
 ```
 npm run test
 ```
-
----
-
-## Application features
-Database server is located on http:\\\\localhost:(PORT + 'number cpu your PC'). 
-So, if there are errors on server side of this localhost, then you will get an error on any request from another server.
-
-Please, when you make request, make the body size adequate.
 
 ---
 
