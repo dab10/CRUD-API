@@ -6,7 +6,7 @@
   "scripts": {
     "start:dev": "nodemon ./src/index.ts",
     "start:prod": "webpack --mode=production && node ./dist/index.js",
-    "start:multi": "webpack --mode=production && node ./dist/index.js --balancer",
+    "start:multi": "webpack --mode=production && node ./dist/index.js",
     "dev:multi": "nodemon ./src/cluster.ts",
     "lint": "eslint src//*.ts",
     "lint:fix": "eslint --fix src//*.ts",

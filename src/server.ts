@@ -1,5 +1,4 @@
 import * as http from "http";
-import os from 'os';
 import 'dotenv/config';
 import { getUsers, getUser, createUser, updateUser, deleteUser } from "./controllers/controller";
 import { apiUrl, baseUrl, Errors, HttpStatusCode, usersUrl } from "./utils/const";
