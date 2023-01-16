@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import http from 'http';
 import { startServer } from '../server';
 import supertest from 'supertest';
 import { User } from '../userDB/userDB';
@@ -12,12 +11,17 @@ const createUser = {
 const updateUser = {
   username: 'Anonym',
   age: 15,
-  hobbies: ['hackers', 'programming'],
+  hobbies: ['hackers', 'programming']
 };
 const badUser = { 
   username: 'Anonym', 
   age: 14, 
   hobbies: 'hackers' 
+};
+const badUserJSON = { 
+  username: 'Anonym', 
+  age: 14, 
+  hobbies: ['hackers', 'programming']
 };
 const PORT = Number(process.env.PORT) || 4000;
 
@@ -77,7 +81,7 @@ describe('API Tests', function () {
     });
   });
 
-  describe('Scenario N2 - Create two new users => Read all (2 users) => Create new users (3 users) => Delete second (2 users) => Read all (2 users) => POST bad JSON data', function () {
+  describe('Scenario N2 - Create two new users => Read all (2 users) => Create new users (3 users) => Delete second (2 users) => Read all (2 users) => POST bad data', function () {
     const userIds: string[] = [];
 
     it('should create two new users', async () => {
@@ -132,5 +136,65 @@ describe('API Tests', function () {
     });
   });
 
+  describe('Scenario N3 - Create New users => Get data from non-existent url => Check not support method => Check invalid userID => Check user in DB', function () {
+    let userId: string;
+    let userForCheck: User;
 
+    it('should create new user', async () => {
+      const res = await request.post('/api/users').send(createUser);
+      expect(res.status).toEqual(201);
+      expect(res.body).toEqual(
+        expect.objectContaining({ id: expect.any(String), ...createUser })
+      );
+      userId = res.body.id;
+      userForCheck = res.body;
+      console.log(userForCheck)
+    });
+
+    it('should return error msg "Route not found"', async () => {
+      const res = await request.post('/nonExistentUrl').send(badUserJSON);
+      expect(res.status).toEqual(404);
+      expect(res.body).toEqual({
+        code: 404,
+        message: 'Route not found',
+      });
+    });
+
+    it('should return error msg about not support method', async () => {
+      const res = await request.patch('/api/users').send(badUserJSON);
+      expect(res.status).toEqual(501);
+      expect(res.body).toEqual({
+        code: 501,
+        message: 'Server does not support entered request with such request method',
+      });
+    });
+
+    it('should return error msg "User id is invalid"', async () => {
+      const res = await request.get('/api/users/' + userId + 'char');
+      expect(res.status).toEqual(400);
+      expect(res.body).toEqual({
+        code: 400,
+        message: 'User id is invalid',
+      });
+    });
+
+    it('should return error msg "User not found"', async () => {
+      const badUserId = userId.substring(userId.length - 1) === 'a' ? userId.substring(0, userId.length - 1) + 'b' : userId.substring(0, userId.length - 1) + 'a'
+      const res = await request.get('/api/users/' + badUserId);
+      expect(res.status).toEqual(404);
+      expect(res.body).toEqual({
+        code: 404,
+        message: 'User not found',
+      });
+    });
+
+    it('should return user without changes', async () => {
+      const res = await request.get('/api/users');
+      expect(res.status).toEqual(200);
+      console.log(userForCheck)
+      console.log(res.body)
+      expect(res.body.users.find((item: User) => userForCheck.id === item.id)).toEqual(userForCheck);
+    });
+
+  });
 });
