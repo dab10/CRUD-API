@@ -48,7 +48,6 @@ export const validateBodyRequest = (body: string, multi = false) => {
       ) {
         return  ValidateBodyRequestStatus.Ok;
       } else {
-        console.log('second')
         return ValidateBodyRequestStatus.ValidateError;
       }
     } else {
@@ -72,12 +71,10 @@ export const validateBodyRequest = (body: string, multi = false) => {
       ) {
         return  ValidateBodyRequestStatus.Ok;
       } else {
-        console.log('first') 
         return ValidateBodyRequestStatus.ValidateError;
       }
     }
   } else {
-    console.log('third') 
     return ValidateBodyRequestStatus.ValidateError;
   }
 }

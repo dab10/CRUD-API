@@ -148,7 +148,6 @@ describe('API Tests', function () {
       );
       userId = res.body.id;
       userForCheck = res.body;
-      console.log(userForCheck)
     });
 
     it('should return error msg "Route not found"', async () => {
@@ -191,8 +190,6 @@ describe('API Tests', function () {
     it('should return user without changes', async () => {
       const res = await request.get('/api/users');
       expect(res.status).toEqual(200);
-      console.log(userForCheck)
-      console.log(res.body)
       expect(res.body.users.find((item: User) => userForCheck.id === item.id)).toEqual(userForCheck);
     });
 

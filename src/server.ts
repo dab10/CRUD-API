@@ -39,7 +39,7 @@ export const startServer = (PORT: number) => {
   server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
   process.on('SIGINT', () => {
-    console.log(`Server stopping on port ${PORT}111111111111`);
+    console.log(`Server stopping on port ${PORT}`);
     server.close(() => {
       process.exit();
     })

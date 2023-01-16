@@ -12,8 +12,7 @@ const serverPorts: number[] = [];
 let isFirstRequest = true;
 let current = 0;
 
-// const cpusCount = os.cpus().length;
-const cpusCount = 4;
+const cpusCount = os.cpus().length;
 
 if (cluster.isPrimary) {
 
@@ -34,8 +33,6 @@ if (cluster.isPrimary) {
       } else {
         current === (serverPorts.length-1) ? current = 0 : current++;
       }
-      console.log(current)
-      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",req.headers.host)
   
       if (req.url === baseUrl && req.method === 'GET') {
         const options = {
@@ -115,7 +112,6 @@ if (cluster.isPrimary) {
   
           const requestToWorkerServer = http.request(options, async (res) => {
             const body = await getUserData(res);
-            console.log(body)
             const { code } = JSON.parse(body);
     
             responseMasterServer.writeHead(code? code : HttpStatusCode.Ok, { 'Content-Type': 'application/json' });
@@ -140,7 +136,6 @@ if (cluster.isPrimary) {
   
         const requestToWorkerServer = http.request(options, async (res) => {
           const body = await getUserData(res);
-          console.log("DELETE= ", body)
   
           if (body) {
             const { code } = JSON.parse(body);
@@ -175,7 +170,7 @@ if (cluster.isPrimary) {
   });
 
   process.on('SIGINT', () => {
-    console.log(`Server stopping on port ${PORT}first`);
+    console.log(`Server stopping on port ${PORT}`);
     masterServer.close(() => {
       process.exit();
     })
@@ -188,11 +183,9 @@ if (cluster.isPrimary) {
 
 } else if (cluster.isWorker) {
   if (cluster.worker && cluster.worker.id === cpusCount) {
-    console.log("!!!!!!!", cluster.worker?.id)  
     startServer(PORT + cpusCount - cluster.worker.id);
     console.log(`ServerDB started. Pid: ${process.pid}`);
   } else {
-    console.log("!!!!!!!", cluster.worker?.id)
     const workerServer = http.createServer(async (req, responseWorkerServer) => {
       try {
         if (cluster.worker)
@@ -229,7 +222,6 @@ if (cluster.isPrimary) {
                 'Content-Length': data.length
             }
           };
-          console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",req.headers.host)
           const requestToWorkerServer = http.request(options, async (res) => {
             const body = await getUserData(res);
   
@@ -291,7 +283,6 @@ if (cluster.isPrimary) {
   
           const requestToWorkerServer = http.request(options, async (res) => {
             const body = await getUserData(res);
-            console.log(body)
             const { code } = JSON.parse(body);
   
             responseWorkerServer.writeHead(code? code : HttpStatusCode.Ok, { 'Content-Type': 'application/json' });
@@ -316,7 +307,6 @@ if (cluster.isPrimary) {
   
           const requestToWorkerServer = http.request(options, async (res) => {
             const body = await getUserData(res);
-            console.log(body)
             if (body) {
               const { code } = JSON.parse(body);
               responseWorkerServer.writeHead(code, { 'Content-Type': 'application/json' });
@@ -348,7 +338,7 @@ if (cluster.isPrimary) {
     workerServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
     process.on('SIGINT', () => {
-      console.log(`Server stopping on port ${PORT}second`);
+      console.log(`Server stopping on port ${PORT}`);
       workerServer.close(() => {
         process.exit(0);
       })
