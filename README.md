@@ -11,6 +11,8 @@ Endpoint is `api/users`:
 ---
 
 ## Application features
+Please wait for all servers to load before making a request (especially in multi mode!)
+
 Database server is located on http:\\\\localhost:(PORT + 'number cpu your PC'). 
 So, if there are errors on server side of this localhost, then you will get an error on any request from another server.
 
@@ -28,7 +30,7 @@ To run this API server, you must do the following steps:
     ```
     git clone https://github.com/dab10/CRUD-API.git
     ``` 
-2. Switch branch to CRUD-API-DEV.
+2. Switch branch to CRUD-API-DEVELOPMENT.
 3. Run the command line and go to the created folder.
 4. Install dependencies by entering the command
     ```
