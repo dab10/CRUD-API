@@ -140,16 +140,16 @@ if (cluster.isPrimary) {
   
         const requestToWorkerServer = http.request(options, async (res) => {
           const body = await getUserData(res);
-          console.log(body)
+          console.log("DELETE= ", body)
   
           if (body) {
             const { code } = JSON.parse(body);
             responseMasterServer.writeHead(code, { 'Content-Type': 'application/json' });
             responseMasterServer.end(body);
+          } else {
+            responseMasterServer.writeHead(HttpStatusCode.NoContent, { 'Content-Type': 'application/json' });
+            responseMasterServer.end(body);
           }
-  
-          responseMasterServer.writeHead(HttpStatusCode.NoContent, { 'Content-Type': 'application/json' });
-          responseMasterServer.end(body);
         });
         requestToWorkerServer.write(data);
         requestToWorkerServer.end();
@@ -321,10 +321,10 @@ if (cluster.isPrimary) {
               const { code } = JSON.parse(body);
               responseWorkerServer.writeHead(code, { 'Content-Type': 'application/json' });
               responseWorkerServer.end(body);
+            } else {
+              responseWorkerServer.writeHead(HttpStatusCode.NoContent, { 'Content-Type': 'application/json' });
+              responseWorkerServer.end(body);
             }
-  
-            responseWorkerServer.writeHead(HttpStatusCode.NoContent, { 'Content-Type': 'application/json' });
-            responseWorkerServer.end(body);
           });
           requestToWorkerServer.write(data);
           requestToWorkerServer.end();

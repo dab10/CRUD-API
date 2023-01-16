@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start:dev": "nodemon ./src/index.ts",
-    "start:prod": "webpack --mode=production && node ./dist/index.js",
-    "start:multi": "webpack --mode=production && node ./dist/index.js",
+    "start:prod": "webpack --mode=production --entry ./src/index.ts && node ./dist/index.js",
+    "start:multi": "webpack --mode=production --entry ./src/cluster.ts && node ./dist/index.js",
     "dev:multi": "nodemon ./src/cluster.ts",
     "lint": "eslint src//*.ts",
     "lint:fix": "eslint --fix src//*.ts",
