@@ -131,7 +131,7 @@ describe('API Tests', function () {
       expect(res.status).toEqual(400);
       expect(res.body).toEqual({
         code: 400,
-        message: 'Body does not contain required fields (username, age, hobbies) or properties do not match data types',
+        message: 'Body does not contain required fields (username, age, hobbies) or order of fields is broken or properties do not match data types',
       });
     });
   });
