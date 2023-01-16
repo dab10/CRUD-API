@@ -18,7 +18,7 @@ export enum Errors {
   InvalidUserId = 'User id is invalid',
   UserNotFound = 'User not found',
   MethodNotSupport = 'Server does not support entered request with such request method',
-  NotValidateFields = 'Body does not contain required fields (username, age, hobbies) or properties do not match data types',
+  NotValidateFields = 'Body does not contain required fields (username, age, hobbies) or order of properties is broken or properties do not match data types',
   ErrorJsonParse = 'Unexpected character of JSON data'
 }
 
