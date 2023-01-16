@@ -11,10 +11,12 @@ Endpoint is `api/users`:
 ---
 
 ## Application features
-Please wait for all servers to load before making a request (especially in multi mode!)
+Please, wait for all servers to load before making a request (especially in multi mode!).
 
 Database server is located on http:\\\\localhost:(PORT + 'number cpu your PC'). 
 So, if there are errors on server side of this localhost, then you will get an error on any request from another server.
+
+Please, wait for all servers to load before making a request (especially in multi mode!).
 
 Please, when you make request, make the body size adequate.
 
